@@ -31,6 +31,7 @@ gem 'sassc-rails', '>= 2.1.0'
 gem 'bootstrap-sass', '~> 3.4', '>= 3.4.1'
 gem 'jquery-rails', '~> 4.4'
 gem 'nested_form_fields'
+gem "cocoon"
 
 
 group :development, :test do

@@ -31,6 +31,17 @@
     <%= form.number_field :chef_id %>
   </div>
 
+    <%= form.fields_for :ingredient do |ingredient| %>
+      <div class='nested-fields'>
+        <div class="field">
+          <%= form.label :name %>
+          <%= form.text_field :name %>
+        </div>
+
+      </div>
+
+    <% end %>
+
   <div class="actions">
     <%= form.submit %>
   </div>

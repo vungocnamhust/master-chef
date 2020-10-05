@@ -60,7 +60,7 @@ class RecipesController < ApplicationController
       format.json { head :no_content }
     end
   end
-
+ 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_recipe
@@ -69,6 +69,8 @@ class RecipesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id)
+      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
+        ingredients_attributes: [:id, :name, :_destroy],
+        step_attributes: [:id, :direction, :_destroy])
     end
 end
