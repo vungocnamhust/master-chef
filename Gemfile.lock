@@ -221,12 +221,12 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap (>= 1.4.2)
-  bootstrap-sass (~> 3.4, >= 3.4.1)
+  bootstrap-sass (~> 3.4.1)
   byebug
   capybara (>= 2.15)
   cocoon
   jbuilder (~> 2.7)
-  jquery-rails (~> 4.4)
+  jquery-rails
   listen (~> 3.2)
   nested_form_fields
   puma (~> 4.1)

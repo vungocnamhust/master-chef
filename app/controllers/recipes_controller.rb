@@ -21,10 +21,56 @@ class RecipesController < ApplicationController
   def edit
   end
 
+  def createRecipe
+    render json: {recipe: params[:recipe], ingredient: params[:ingredients], step: params[:steps]}
+  end
+
   # POST /recipes
   # POST /recipes.json
   def create
-    @recipe = Recipe.new(recipe_params)
+    # p json: {data: recipe_params}
+    # return render json:{ data: recipe_params }
+    
+    # begin
+    #   @recipe = Recipe.create({
+    #     name: recipe_params[:name],
+    #     description: recipe_params[:description],
+    #   })
+    # rescue => error 
+      
+    # end
+
+
+    @recipe = Recipe.new
+
+    @recipe.name = recipe_params[:name]
+    @recipe.description = recipe_params[:description]
+    @recipe.avatar_url = recipe_params[:avatar_url]
+    @recipe.chef_id = recipe_params[:chef_id]
+
+    @recipe.ingredients << Ingredient.new({name: "test"})
+    @recipe.steps << Step.new({direction: "test"})
+    
+    # return render json:{ data: recipe_params }
+
+    if !@recipe.save
+      @recipe.errors
+    end
+    # @recipe = recipe_params[:recipes]
+    
+    # @ingredients = recipe_params[:ingredients]
+    # return render @recipe_params[:ingredients]
+    # @ingredients.each do |i|
+    #   existIngredient = Ingredient.find_by_name(i)
+    #   if existIngredient.present?
+    #     RecipeIngredient.create({
+    #       recipe_id: @recipe.id,
+    #       ingredient_id: existIngredient.id
+    #     })
+    #   else
+    #     @recipe.ingredients << i 
+    #   end
+    # end
 
     respond_to do |format|
       if @recipe.save
@@ -53,7 +99,7 @@ class RecipesController < ApplicationController
 
   # DELETE /recipes/1
   # DELETE /recipes/1.json
-  def destroy
+  def destroy    
     @recipe.destroy
     respond_to do |format|
       format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
@@ -69,8 +115,14 @@ class RecipesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
+      p "-------------------"
+      p       params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
         ingredients_attributes: [:id, :name, :_destroy],
-        step_attributes: [:id, :direction, :_destroy])
+        steps_attributes: [:id, :direction, :_destroy], :ingredients => [], :steps => []) 
+      p "-------------------"
+
+      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
+        :ingredients => [],
+        :steps => [],)
     end
 end

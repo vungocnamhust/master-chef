@@ -1,8 +1,15 @@
 class Recipe < ApplicationRecord
-    has_many :ingredients, inverse_of: :recipe, dependent: :destroy
-        accepts_nested_attributes_for :ingredients, reject_if: :all_blank, allow_destroy: true
+    has_many :ingredients, dependent: :destroy
+        accepts_nested_attributes_for :ingredients, allow_destroy: true
     
-    has_many :steps, inverse_of: :recipe, dependent: :destroy
-        accepts_nested_attributes_for :steps, reject_if: :all_blank, allow_destroy: true
-        
+    has_many :steps, dependent: :destroy
+        accepts_nested_attributes_for :steps, allow_destroy: true
+
+    before_create :generateHandle
+
+#   validates :name, :presence => true
+
+    def generateHandle
+        self.handle = parameterize(self.title)
+    end
 end

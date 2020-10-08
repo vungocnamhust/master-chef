@@ -1,3 +1,5 @@
+
+
 <%= form_with(model: recipe, local: true) do |form| %>
   <% if recipe.errors.any? %>
     <div id="error_explanation">
@@ -12,13 +14,13 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description %>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
   </div>
 
   <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
+    <%= form.label :description %>
+    <%= form.text_area :description %>
   </div>
 
   <div class="field">
@@ -30,19 +32,41 @@
     <%= form.label :chef_id %>
     <%= form.number_field :chef_id %>
   </div>
+  
 
-    <%= form.fields_for :ingredient do |ingredient| %>
-      <div class='nested-fields'>
-        <div class="field">
-          <%= form.label :name %>
-          <%= form.text_field :name %>
-        </div>
+<div class="wrapper">
+    <h3> Add Ingredient</h3>
+    <div class="content-added"> </div>
+    <input id="add-ingredient" type="text" />
+    
+    <h3> Add Step</h3>
+    <div class="content-added-step"> </div>
+    <input id="add-step" type="text" />
+</div>
 
-      </div>
+<%= javascript_pack_tag 'add_ingredient' %>
+<%= javascript_pack_tag 'add_step' %>
 
-    <% end %>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+
+<button class="save-recipe" type="submit">Save</button>
+
+  <script>
+  //   const saveRecipe = document.querySelector(".save-recipe")
+  //   const ingredientsRecipe = document.querySelector(".content-added")
+
+  //   saveRecipe.addEventListener('click', function() {
+  //   const listIngredients = [...ingredientsRecipe.innerText]
+  //   console.log(`${ingredientsRecipe.innerText}`)
+  //   var ingredientsJs = <%= @ingredients.to_json %>;
+  //   if (ingredientsJs === null) {
+  //     ingredientsJs = [];
+  //   }
+  //   console.log(`${ingredientsJs}`)
+    
+  //  });
+
+  </script>
+
+  
 <% end %>
