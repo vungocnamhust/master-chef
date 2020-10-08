@@ -85,8 +85,28 @@ class RecipesController < ApplicationController
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
   def update
+    # Check presence 
+    recipe = @recipe
+    ingredients = recipe_params[:ingredients]
+    
+    if ingredients != nil 
+      ingredients.each do |ingredient| 
+        recipe.ingredients << Ingredient.new({name: ingredient})
+      end
+    end
+
+    
+    steps = recipe_params[:steps]
+
+
+    if steps != nil 
+      steps.each do |step| 
+        recipe.steps << Step.new({direction: step})
+      end
+    end
+
     respond_to do |format|
-      if @recipe.update(recipe_params)
+      if @recipe.update(ingredients: recipe.ingredients, steps: recipe.steps)
         format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: @recipe }
       else
@@ -114,12 +134,6 @@ class RecipesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      p "-------------------"
-      p       params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
-        ingredients_attributes: [:id, :name, :_destroy],
-        steps_attributes: [:id, :direction, :_destroy], :ingredients => [], :steps => []) 
-      p "-------------------"
-
       params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
         :ingredients => [],
         :steps => [],)

@@ -1,47 +1,56 @@
-
-
 <%= form_with(model: recipe, local: true) do |form| %>
-  <% if recipe.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+<% if recipe.errors.any? %>
+<div id="error_explanation">
+  <h2><%= pluralize(recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
 
-      <ul>
-        <% recipe.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <ul>
+    <% recipe.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
+<div class="field">
+  <%= form.label :name %>
+  <%= form.text_field :name %>
+</div>
 
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description %>
-  </div>
+<div class="field">
+  <%= form.label :description %>
+  <%= form.text_area :description %>
+</div>
 
-  <div class="field">
-    <%= form.label :avatar_url %>
-    <%= form.text_field :avatar_url %>
-  </div>
+<div class="field">
+  <%= form.label :avatar_url %>
+  <%= form.text_field :avatar_url %>
+</div>
 
-  <div class="field">
-    <%= form.label :chef_id %>
-    <%= form.number_field :chef_id %>
-  </div>
-  
+<div class="field">
+  <%= form.label :chef_id %>
+  <%= form.number_field :chef_id %>
+</div>
+
 
 <div class="wrapper">
-    <h3> Add Ingredient</h3>
+  <h3> Add Ingredient</h3>
+  <ol>
+		<% for @ingredient in @recipe.ingredients %>
+			<li><%= @ingredient.name %></li>
+		<% end %>
     <div class="content-added"> </div>
     <input id="add-ingredient" type="text" />
-    
-    <h3> Add Step</h3>
+  </ol>
+
+  <h3> Add Step</h3>
+  <ol>
+    <% for @step in @recipe.steps %>
+    <li><%= @step.direction %></li>
+    <% end %>
     <div class="content-added-step"> </div>
     <input id="add-step" type="text" />
+  </ol>
+
 </div>
 
 <%= javascript_pack_tag 'add_ingredient' %>
@@ -51,22 +60,4 @@
 
 <button class="save-recipe" type="submit">Save</button>
 
-  <script>
-  //   const saveRecipe = document.querySelector(".save-recipe")
-  //   const ingredientsRecipe = document.querySelector(".content-added")
-
-  //   saveRecipe.addEventListener('click', function() {
-  //   const listIngredients = [...ingredientsRecipe.innerText]
-  //   console.log(`${ingredientsRecipe.innerText}`)
-  //   var ingredientsJs = <%= @ingredients.to_json %>;
-  //   if (ingredientsJs === null) {
-  //     ingredientsJs = [];
-  //   }
-  //   console.log(`${ingredientsJs}`)
-    
-  //  });
-
-  </script>
-
-  
 <% end %>
