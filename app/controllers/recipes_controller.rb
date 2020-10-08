@@ -28,18 +28,6 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.json
   def create
-    # p json: {data: recipe_params}
-    # return render json:{ data: recipe_params }
-    
-    # begin
-    #   @recipe = Recipe.create({
-    #     name: recipe_params[:name],
-    #     description: recipe_params[:description],
-    #   })
-    # rescue => error 
-      
-    # end
-
 
     @recipe = Recipe.new
 
@@ -53,7 +41,9 @@ class RecipesController < ApplicationController
       if existIngredient.present?
         # add record to table IngredientRecipes
       else
-        @recipe.ingredients << Ingredient.new({name: ingredient})
+        @recipe = Recipe.joins(:ingredient_recipes).where("ingredient_recipes.recipe_id = ?", @recipe.id).select("*")
+        return render json: {data: @recipe}
+        # @recipe.ingredients << Ingredient.new({name: ingredient})
       end
     end
 
