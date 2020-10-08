@@ -47,16 +47,15 @@ class RecipesController < ApplicationController
     @recipe.description = recipe_params[:description]
     @recipe.avatar_url = recipe_params[:avatar_url]
     @recipe.chef_id = recipe_params[:chef_id]
-
-    @recipe.ingredients << Ingredient.new({name: "test"})
-    @recipe.steps << Step.new({direction: "test"})
-    
-    # return render json:{ data: recipe_params }
-
-    if !@recipe.save
-      @recipe.errors
+    @ingredients = recipe_params[:ingredients]
+    @ingredients.each do |ingredient| 
+      @recipe.ingredients << Ingredient.new({name: ingredient})
     end
-    # @recipe = recipe_params[:recipes]
+
+    @steps = recipe_params[:steps]
+    @steps.each do |step| 
+      @recipe.steps << Step.new({direction: step})
+    end
     
     # @ingredients = recipe_params[:ingredients]
     # return render @recipe_params[:ingredients]
