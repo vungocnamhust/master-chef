@@ -49,7 +49,12 @@ class RecipesController < ApplicationController
     @recipe.chef_id = recipe_params[:chef_id]
     @ingredients = recipe_params[:ingredients]
     @ingredients.each do |ingredient| 
-      @recipe.ingredients << Ingredient.new({name: ingredient})
+      existIngredient = Ingredient.find_by_name(ingredient)
+      if existIngredient.present?
+        # add record to table IngredientRecipes
+      else
+        @recipe.ingredients << Ingredient.new({name: ingredient})
+      end
     end
 
     @steps = recipe_params[:steps]
@@ -57,7 +62,6 @@ class RecipesController < ApplicationController
       @recipe.steps << Step.new({direction: step})
     end
     
-    # @ingredients = recipe_params[:ingredients]
     # return render @recipe_params[:ingredients]
     # @ingredients.each do |i|
     #   existIngredient = Ingredient.find_by_name(i)
