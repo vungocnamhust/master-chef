@@ -35,38 +35,39 @@ class RecipesController < ApplicationController
     @recipe.description = recipe_params[:description]
     @recipe.avatar_url = recipe_params[:avatar_url]
     @recipe.chef_id = recipe_params[:chef_id]
-    @ingredients = recipe_params[:ingredients]
-    @ingredients.each do |ingredient| 
-      existIngredient = Ingredient.find_by_name(ingredient)
-      if existIngredient.present?
-        # add record to table IngredientRecipes
-      else
-        @recipe = Recipe.joins(:ingredient_recipes).where("ingredient_recipes.recipe_id = ?", @recipe.id).select("*")
-        return render json: {data: @recipe}
-        # @recipe.ingredients << Ingredient.new({name: ingredient})
+
+    # check recipe fields (name, des, url, id) not blank
+    if checkRecipe(@recipe) 
+      isValid = true
+      @recipe.save 
+      @ingredients = recipe_params[:ingredients]
+      @ingredients.each do |ingredient| 
+        existIngredient = Ingredient.find_or_create_by(name:ingredient)
+        if existIngredient.nil?
+          existIngredient = Ingredient.find_by(name: ingredient)
+        end
+  
+        @ingredientRecipe = IngredientRecipe.new 
+        @ingredientRecipe.recipe_id = @recipe.id 
+        @ingredientRecipe.ingredient_id = existIngredient.id
+        @ingredientRecipe.save 
+  
       end
+  
+      @steps = recipe_params[:steps]
+      @steps.each do |step| 
+        @recipe.steps << Step.new({direction: step})
+      end
+    else 
+      isValid = false
+      flash.now[:alert] = 'Error while sending message!'
     end
 
-    @steps = recipe_params[:steps]
-    @steps.each do |step| 
-      @recipe.steps << Step.new({direction: step})
-    end
+
     
-    # return render @recipe_params[:ingredients]
-    # @ingredients.each do |i|
-    #   existIngredient = Ingredient.find_by_name(i)
-    #   if existIngredient.present?
-    #     RecipeIngredient.create({
-    #       recipe_id: @recipe.id,
-    #       ingredient_id: existIngredient.id
-    #     })
-    #   else
-    #     @recipe.ingredients << i 
-    #   end
-    # end
 
     respond_to do |format|
-      if @recipe.save
+      if isValid
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
         format.json { render :show, status: :created, location: @recipe }
       else
@@ -131,5 +132,9 @@ class RecipesController < ApplicationController
       params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
         :ingredients => [],
         :steps => [],)
+    end
+
+    def checkRecipe(recipe)
+      return recipe != nil && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
     end
 end
