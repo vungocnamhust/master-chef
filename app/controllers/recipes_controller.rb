@@ -41,6 +41,7 @@ class RecipesController < ApplicationController
       isValid = true
       @recipe.save 
       @ingredients = recipe_params[:ingredients]
+      if checkIngredientInput(@ingredients)
       @ingredients.each do |ingredient| 
         existIngredient = Ingredient.find_or_create_by(name:ingredient)
         if existIngredient.nil?
@@ -51,20 +52,19 @@ class RecipesController < ApplicationController
         @ingredientRecipe.recipe_id = @recipe.id 
         @ingredientRecipe.ingredient_id = existIngredient.id
         @ingredientRecipe.save 
-  
       end
-  
+      end
+      
       @steps = recipe_params[:steps]
+      if checkStepInput(@steps)
       @steps.each do |step| 
         @recipe.steps << Step.new({direction: step})
       end
+    end
     else 
       isValid = false
       flash.now[:alert] = 'Error while sending message!'
     end
-
-
-    
 
     respond_to do |format|
       if isValid
@@ -92,8 +92,6 @@ class RecipesController < ApplicationController
 
     
     steps = recipe_params[:steps]
-
-
     if steps != nil 
       steps.each do |step| 
         recipe.steps << Step.new({direction: step})
@@ -137,4 +135,14 @@ class RecipesController < ApplicationController
     def checkRecipe(recipe)
       return recipe != nil && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
     end
+
+    def checkStepInput(input)
+      return !input.nil? && input.length > 0
+    end
+    
+    def checkIngredientInput(input)
+      return !input.nil? && input.length > 0
+    end
+    
+
 end
