@@ -39,7 +39,7 @@
   <h3> Add Ingredient</h3>
   <ol>
 		<% for @ingredient in @recipe.ingredients %>
-			<li><form><%= @ingredient.name %></form></li>
+			<li><%= @ingredient.name %></li>
 		<% end %>
     <div class="content-added"> </div>
     <input id="add-ingredient" type="text" />

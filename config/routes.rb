@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'ingredient/delete'
   resources :recipes
   root 'recipes#index'
 
