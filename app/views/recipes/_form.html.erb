@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<%= stylesheet_link_tag "recipes", media: "all" %>
+
 <%= form_with(model: recipe, local: true) do |form| %>
 <% if recipe.errors.any? %>
 <div id="error_explanation">
@@ -85,6 +88,8 @@
       }
     }
   </script>
+
+
 
   <h3> Add Step</h3>
   <div class="steps-db">
