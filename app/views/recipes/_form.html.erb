@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<%= stylesheet_link_tag "recipes", media: "all" %>
+
 <%= form_with(model: recipe, local: true) do |form| %>
 <% if recipe.errors.any? %>
 <div id="error_explanation">
@@ -36,11 +39,13 @@
   <h3> Add Ingredient</h3>
   <ol>
 		<% for @ingredient in @recipe.ingredients %>
-			<li><%= @ingredient.name %></li>
+			<li><form><%= @ingredient.name %></form></li>
 		<% end %>
     <div class="content-added"> </div>
     <input id="add-ingredient" type="text" />
   </ol>
+
+
 
   <h3> Add Step</h3>
   <ol>
@@ -50,7 +55,6 @@
     <div class="content-added-step"> </div>
     <input id="add-step" type="text" />
   </ol>
-
 </div>
 
 <%= javascript_pack_tag 'add_ingredient' %>
