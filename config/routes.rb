@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
+  
   resources :recipes
+  resources :ingredient
   root 'recipes#index'
 
   post '/add-recipe', to: "recipes#createRecipe"

@@ -34,6 +34,7 @@
 
 <div class="wrapper">
   <h3> Add Ingredient</h3>
+  <div class="ingredients-db">
   <ol>
 		<% for @ingredient in @recipe.ingredients %>
 			<li class="flex-horizontal" id="ingredient-<%= @ingredient.id%>">
@@ -43,6 +44,7 @@
           </button>   
       </li>
 		<% end %>
+    </div>
     <div class="content-added"> </div>
     <input id="add-ingredient" type="text" />
   </ol>
