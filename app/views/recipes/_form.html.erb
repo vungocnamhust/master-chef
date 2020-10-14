@@ -37,14 +37,60 @@
 
 <div class="wrapper">
   <h3> Add Ingredient</h3>
+  <div class="ingredients-db">
   <ol>
 		<% for @ingredient in @recipe.ingredients %>
-			<li><%= @ingredient.name %></li>
+			<li class="flex-horizontal" id="ingredient-<%= @ingredient.id%>">
+        <p><%= @ingredient.name %></p>
+       
+          <button data-url="/ingredient/<%= @ingredient.id %>/delete">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>   
+      </li>
 		<% end %>
+    </div>
     <div class="content-added"> </div>
     <input id="add-ingredient" type="text" />
   </ol>
+  
+  <script>
+    let btnList = document.querySelectorAll(".wrapper button");
+    if ( btnList != null && btnList.length > 0 && <%= !@ingredient.nil?%>) {
+      for (let btn of btnList) {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          let ingredientObj = {
+            ingredient: {
+              recipe_id: "<%= @recipe.id %>",
+              ingredient_id: "<%= @ingredient.id%>",
+            }
+          };
+          let url = this.getAttribute("data-url")
+          fetch(url, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(ingredientObj),
+          }).then(res => {
+            console.log("____________", res);
+            if (res.status == 200) {
+            }
+            return res.json()
+          }).then(res => {
+              console.log("+++", res, res['data']['id']);
+              if (res['status'] == 'ok') {
+                let item = document.getElementById(`ingredient-${res['data']['id']}`);
+                item.parentNode.removeChild(item);
+              }
+              
+          });
+        });      
+      }
+    }
 
+
+  </script>
 
 
   <h3> Add Step</h3>

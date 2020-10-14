@@ -76,7 +76,7 @@ class RecipesController < ApplicationController
       end
     end
   end
-
+ 
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
   def update
