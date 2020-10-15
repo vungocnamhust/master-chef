@@ -14,7 +14,8 @@ class IngredientController < ApplicationController
       ingredientRecipe.destroy
     else
       respond_to do |format|
-        format.json 
+        msg = {:status => "fail", :message => "Not found in db"}
+        format.json {render :json => msg}
       end
     end
     

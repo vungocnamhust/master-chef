@@ -42,7 +42,6 @@
 		<% for @ingredient in @recipe.ingredients %>
 			<li class="flex-horizontal" id="ingredient-<%= @ingredient.id%>">
         <p><%= @ingredient.name %></p>
-       
           <button data-url="/ingredient/<%= @ingredient.id %>/delete">
             <span class="glyphicon glyphicon-trash"></span>
           </button>   
@@ -54,15 +53,16 @@
   </ol>
   
   <script>
-    let btnList = document.querySelectorAll(".wrapper button");
-    if ( btnList != null && btnList.length > 0 && <%= !@ingredient.nil?%>) {
+    let btnList = document.querySelectorAll(".wrapper .ingredients-db button");
+    if ( btnList != null && btnList.length > 0) {
       for (let btn of btnList) {
         btn.addEventListener("click", function(e) {
           e.preventDefault();
+          let ingredientId = btn.parentNode.getAttribute('id');
           let ingredientObj = {
             ingredient: {
               recipe_id: "<%= @recipe.id %>",
-              ingredient_id: "<%= @ingredient.id%>",
+              ingredient_id: `${ingredientId.split('-')[1]}`,
             }
           };
           let url = this.getAttribute("data-url")
@@ -78,7 +78,6 @@
             }
             return res.json()
           }).then(res => {
-              console.log("+++", res, res['data']['id']);
               if (res['status'] == 'ok') {
                 let item = document.getElementById(`ingredient-${res['data']['id']}`);
                 item.parentNode.removeChild(item);
@@ -88,19 +87,58 @@
         });      
       }
     }
-
-
   </script>
 
-
   <h3> Add Step</h3>
+  <div class="steps-db">
   <ol>
-    <% for @step in @recipe.steps %>
-    <li><%= @step.direction %></li>
-    <% end %>
+		<% for @step in @recipe.steps %>
+			<li class="flex-horizontal" id="step-<%= @step.id%>">
+        <p><%= @step.direction %></p>
+          <button data-url="/steps/<%= @step.id %>/delete">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>   
+      </li>
+		<% end %>
     <div class="content-added-step"> </div>
     <input id="add-step" type="text" />
   </ol>
+
+  <script>
+    let btnStepList = document.querySelectorAll(".wrapper .steps-db button");
+    if ( btnStepList != null && btnStepList.length > 0) {
+      for (let btn of btnStepList) {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          let stepId = btn.parentNode.getAttribute('id');
+          let stepObj = {
+            step: {
+              id: `${stepId.split('-')[1]}`,
+            }
+          };
+          let url = this.getAttribute("data-url")
+          fetch(url, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(stepObj),
+          }).then(res => {
+            console.log("____________", res);
+            if (res.status == 200) {
+            }
+            return res.json()
+          }).then(res => {
+              if (res['status'] == 'ok') {
+                let item = document.getElementById(`step-${res['data']['id']}`);
+                item.parentNode.removeChild(item);
+              }
+              
+          });
+        });      
+      }
+    }
+  </script>
 </div>
 
 <%= javascript_pack_tag 'add_ingredient' %>

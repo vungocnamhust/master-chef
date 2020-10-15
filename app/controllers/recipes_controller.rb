@@ -1,5 +1,6 @@
 class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
+  skip_before_action :verify_authenticity_token, only: :destroyStep
 
   # GET /recipes
   # GET /recipes.json
@@ -118,6 +119,23 @@ class RecipesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def destroyStep
+    stepId = step_params[:id]
+    step = Step.find_by_id(stepId)
+    
+    if step.destroy
+      respond_to do |format|
+        msg = {:status => "ok", :message => "Success", :data => {id: stepId}}
+        format.json { render :json => msg }
+      end
+    else
+      respond_to do |format|
+        msg = {:status => "fail", :message => "Not found in db"}
+        format.json{render :json => msg}
+      end 
+    end
+  end
  
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -142,6 +160,11 @@ class RecipesController < ApplicationController
     
     def checkIngredientInput(input)
       return !input.nil? && input.length > 0
+    end
+
+    private 
+    def step_params
+      params.require(:step).permit(:id)
     end
     
 
