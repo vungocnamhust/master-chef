@@ -1,16 +1,15 @@
 class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
-  skip_before_action :verify_authenticity_token, only: :destroyStep
+  skip_before_action :verify_authenticity_token, only: [:destroyStep, :index]
 
   # GET /recipes
   # GET /recipes.json
   def index
-    p "_________________"
-    searchValue = recipe_search_params[:name]
+    searchValue = params['search']
     if (searchValue.blank?) 
       @recipes = Recipe.all
     else 
-        @recipes = Recipe.where("name LIKE ?", "%" + searchValue +"%")
+      @recipes = Recipe.where("name LIKE ?", "%" + searchValue +"%")
     end
     
   end
@@ -36,10 +35,7 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.json
   def create
-    p "+++++++++++++"
- 
     @recipe = Recipe.new
-
     @recipe.name = recipe_params[:name]
     @recipe.description = recipe_params[:description]
     @recipe.avatar_url = recipe_params[:avatar_url]
