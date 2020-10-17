@@ -5,13 +5,11 @@
 <div class="nav-bar">
 
   <h1>Recipes</h1>
-  <%= form_with url: recipes_path, method: 'post', :class => 'form-inline' do %>
-    <div class="input-group">
-      <%= text_field_tag :search %>
-      <span class="input-group-addon">
-        <span class="glyphicon glyphicon-search"></span>
-      </span>
+  <%= form_tag '/recipes-search', method: 'post', :class => 'form-inline' do %>  
+    <div class="form-group">
+        <%= text_field_tag :search %>
     </div>
+    <%= submit_tag "Find Articles" %>
   <% end %>
 </div>
 

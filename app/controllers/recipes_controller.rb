@@ -5,7 +5,14 @@ class RecipesController < ApplicationController
   # GET /recipes
   # GET /recipes.json
   def index
-    @recipes = Recipe.all
+    p "_________________"
+    searchValue = recipe_search_params[:name]
+    if (searchValue.blank?) 
+      @recipes = Recipe.all
+    else 
+        @recipes = Recipe.where("name LIKE ?", "%" + searchValue +"%")
+    end
+    
   end
 
   # GET /recipes/1
@@ -29,6 +36,7 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.json
   def create
+    p "+++++++++++++"
  
     @recipe = Recipe.new
 
@@ -134,6 +142,10 @@ class RecipesController < ApplicationController
       params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
         :ingredients => [],
         :steps => [],)
+    end
+
+    def recipe_search_params
+      params.permit(:search)
     end
 
     def checkRecipe(recipe)
