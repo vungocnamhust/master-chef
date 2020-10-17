@@ -29,19 +29,7 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.json
   def create
-    # p json: {data: recipe_params}
-    # return render json:{ data: recipe_params }
-    
-    # begin
-    #   @recipe = Recipe.create({
-    #     name: recipe_params[:name],
-    #     description: recipe_params[:description],
-    #   })
-    # rescue => error 
-      
-    # end
-
-
+ 
     @recipe = Recipe.new
 
     @recipe.name = recipe_params[:name]
@@ -63,19 +51,6 @@ class RecipesController < ApplicationController
       @recipe.steps << Step.new({direction: step})
     end
     
-    # return render @recipe_params[:ingredients]
-    # @ingredients.each do |i|
-    #   existIngredient = Ingredient.find_by_name(i)
-    #   if existIngredient.present?
-    #     RecipeIngredient.create({
-    #       recipe_id: @recipe.id,
-    #       ingredient_id: existIngredient.id
-    #     })
-    #   else
-    #     @recipe.ingredients << i 
-    #   end
-    # end
-
     respond_to do |format|
       if @recipe.save
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }

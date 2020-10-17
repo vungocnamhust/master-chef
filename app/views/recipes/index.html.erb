@@ -1,10 +1,21 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+<%= stylesheet_link_tag "recipes", media: "all" %>
 <p id="notice"><%= notice %></p>
 
-<h1>Recipes</h1>
+<div class="nav-bar">
 
-<table class="table table-striped">
+  <h1>Recipes</h1>
+  <%= form_with url: recipes_path, method: 'post', :class => 'form-inline' do %>
+    <div class="input-group">
+      <%= text_field_tag :search %>
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-search"></span>
+      </span>
+    </div>
+  <% end %>
+</div>
+
+<table class="table table-striped table-hover">
   <thead>
     <tr>
       <th>Description</th>
