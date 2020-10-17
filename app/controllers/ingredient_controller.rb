@@ -18,8 +18,6 @@ class IngredientController < ApplicationController
         format.json {render :json => msg}
       end
     end
-    
-
   end
 
   private 

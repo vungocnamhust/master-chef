@@ -3,7 +3,7 @@ let wrapper = document.querySelector(".wrapper");
 let ingredients = wrapper.querySelector(".content-added");
 myInput.onkeydown = function (e) {
   e = e || window.event;
-  if (e.keyCode == 13) {
+  if (e.keyCode === 13) {
     e.preventDefault();
 
     let ingredientObj = {

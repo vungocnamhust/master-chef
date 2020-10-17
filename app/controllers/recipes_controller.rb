@@ -1,17 +1,29 @@
+# frozen_string_literal: true
+
 class RecipesController < ApplicationController
-  before_action :set_recipe, only: [:show, :edit, :update, :destroy]
-  skip_before_action :verify_authenticity_token, only: :destroyStep
+  before_action :set_recipe, only: %i[show edit update destroy]
+  skip_before_action :verify_authenticity_token, only: %i[destroyStep index searchRecipes]
 
   # GET /recipes
   # GET /recipes.json
-  def index
-    @recipes = Recipe.all
+  def index; end
+
+  def searchRecipes
+    searchValue = params.require(:recipe).permit(:name)['name']
+
+    @recipes = if !searchValue.nil? && !searchValue.blank?
+                 Recipe.where('name LIKE ?', '%' + searchValue + '%')
+               else
+                 Recipe.all
+               end
+    respond_to do |format|
+      format.json { render json: { status: :ok, data: @recipes } }
+    end
   end
 
   # GET /recipes/1
   # GET /recipes/1.json
-  def show
-  end
+  def show; end
 
   # GET /recipes/new
   def new
@@ -19,15 +31,12 @@ class RecipesController < ApplicationController
   end
 
   # GET /recipes/1/edit
-  def edit
-  end
+  def edit; end
 
   def createRecipe
-    render json: {recipe: params[:recipe], ingredient: params[:ingredients], step: params[:steps]}
+    render json: { recipe: params[:recipe], ingredient: params[:ingredients], step: params[:steps] }
   end
 
-  # POST /recipes
-  # POST /recipes.json
   def create
 
     @recipe = Recipe.new
@@ -38,31 +47,29 @@ class RecipesController < ApplicationController
     @recipe.chef_id = recipe_params[:chef_id]
 
     # check recipe fields (name, des, url, id) not blank
-    if checkRecipe(@recipe) 
+    if checkRecipe(@recipe)
       isValid = true
-      @recipe.save 
+      @recipe.save
       @ingredients = recipe_params[:ingredients]
       if checkIngredientInput(@ingredients)
-      @ingredients.each do |ingredient| 
-        existIngredient = Ingredient.find_or_create_by(name:ingredient)
-        if existIngredient.nil?
-          existIngredient = Ingredient.find_by(name: ingredient)
+        @ingredients.each do |ingredient|
+          existIngredient = Ingredient.find_or_create_by(name: ingredient)
+          existIngredient = Ingredient.find_by(name: ingredient) if existIngredient.nil?
+
+          @ingredientRecipe = IngredientRecipe.new
+          @ingredientRecipe.recipe_id = @recipe.id
+          @ingredientRecipe.ingredient_id = existIngredient.id
+          @ingredientRecipe.save
         end
-  
-        @ingredientRecipe = IngredientRecipe.new 
-        @ingredientRecipe.recipe_id = @recipe.id 
-        @ingredientRecipe.ingredient_id = existIngredient.id
-        @ingredientRecipe.save 
       end
-      end
-      
+
       @steps = recipe_params[:steps]
       if checkStepInput(@steps)
-      @steps.each do |step| 
-        @recipe.steps << Step.new({direction: step})
+        @steps.each do |step|
+          @recipe.steps << Step.new({ direction: step })
+        end
       end
-    end
-    else 
+    else
       isValid = false
       flash.now[:alert] = 'Error while sending message!'
     end
@@ -77,26 +84,21 @@ class RecipesController < ApplicationController
       end
     end
   end
- 
+
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
   def update
-    # Check presence 
+    # Check presence
     recipe = @recipe
     ingredients = recipe_params[:ingredients]
-    
-    if ingredients != nil 
-      ingredients.each do |ingredient| 
-        recipe.ingredients << Ingredient.new({name: ingredient})
-      end
+
+    ingredients&.each do |ingredient|
+      recipe.ingredients << Ingredient.new({ name: ingredient })
     end
 
-    
     steps = recipe_params[:steps]
-    if steps != nil 
-      steps.each do |step| 
-        recipe.steps << Step.new({direction: step})
-      end
+    steps&.each do |step|
+      recipe.steps << Step.new({ direction: step })
     end
 
     respond_to do |format|
@@ -112,7 +114,7 @@ class RecipesController < ApplicationController
 
   # DELETE /recipes/1
   # DELETE /recipes/1.json
-  def destroy    
+  def destroy
     @recipe.destroy
     respond_to do |format|
       format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
@@ -123,49 +125,57 @@ class RecipesController < ApplicationController
   def destroyStep
     stepId = step_params[:id]
     step = Step.find_by_id(stepId)
-    
+
     if step.destroy
       respond_to do |format|
-        msg = {:status => "ok", :message => "Success", :data => {id: stepId}}
-        format.json { render :json => msg }
+        msg = { status: 'ok', message: 'Success', data: { id: stepId } }
+        format.json { render json: msg }
       end
     else
       respond_to do |format|
-        msg = {:status => "fail", :message => "Not found in db"}
-        format.json{render :json => msg}
-      end 
+        msg = { status: 'fail', message: 'Not found in db' }
+        format.json {render json: msg}
+      end
     end
   end
- 
+
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_recipe
-      @recipe = Recipe.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def recipe_params
-      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
-        :ingredients => [],
-        :steps => [],)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_recipe
+    @recipe = Recipe.find(params[:id])
+  end
 
-    def checkRecipe(recipe)
-      return recipe != nil && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
-    end
+  private
 
-    def checkStepInput(input)
-      return !input.nil? && input.length > 0
-    end
-    
-    def checkIngredientInput(input)
-      return !input.nil? && input.length > 0
-    end
+  # Only allow a list of trusted parameters through.
+  def recipe_params
+    params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id,
+                                   ingredients: [],
+                                   steps: [])
+  end
 
-    private 
-    def step_params
-      params.require(:step).permit(:id)
-    end
-    
+  private
 
+  def checkRecipe(recipe)
+    !recipe.nil? && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
+  end
+
+  private
+
+  def checkStepInput(input)
+    !input.nil? && input.length.positive?
+  end
+
+  private
+
+  def checkIngredientInput(input)
+    !input.nil? && input.length.positive?
+  end
+
+  private
+
+  def step_params
+    params.require(:step).permit(:id)
+  end
 end
