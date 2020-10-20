@@ -20,6 +20,10 @@
   <%= @recipe.chef_id %>
 </p>
 
+<span class="content">
+	<%= image_tag @recipe.image if @recipe.image.attached?  %>
+</span>
+
 <h3>Ingredients</h3>
 	<ul>
 		<% for @ingredient in @recipe.ingredients %>

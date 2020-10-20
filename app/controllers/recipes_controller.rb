@@ -1,17 +1,24 @@
+# frozen_string_literal: true
+
 class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
-  skip_before_action :verify_authenticity_token, only: :destroyStep
+  skip_before_action :verify_authenticity_token, only: [:destroyStep, :index]
 
   # GET /recipes
   # GET /recipes.json
   def index
-    @recipes = Recipe.all
+    searchValue = params['search']
+    if (searchValue.blank?) 
+      @recipes = Recipe.all
+    else 
+      @recipes = Recipe.where("name LIKE ?", "%" + searchValue +"%")
+    end
+    
   end
 
   # GET /recipes/1
   # GET /recipes/1.json
-  def show
-  end
+  def show; end
 
   # GET /recipes/new
   def new
@@ -19,65 +26,54 @@ class RecipesController < ApplicationController
   end
 
   # GET /recipes/1/edit
-  def edit
-  end
+  def edit; end
 
   def createRecipe
-    render json: {recipe: params[:recipe], ingredient: params[:ingredients], step: params[:steps]}
+    render json: { recipe: params[:recipe], ingredient: params[:ingredients], step: params[:steps] }
   end
 
-  # POST /recipes
-  # POST /recipes.json
   def create
-    # p json: {data: recipe_params}
-    # return render json:{ data: recipe_params }
-    
-    # begin
-    #   @recipe = Recipe.create({
-    #     name: recipe_params[:name],
-    #     description: recipe_params[:description],
-    #   })
-    # rescue => error 
-      
-    # end
-
-
     @recipe = Recipe.new
-
     @recipe.name = recipe_params[:name]
     @recipe.description = recipe_params[:description]
     @recipe.avatar_url = recipe_params[:avatar_url]
     @recipe.chef_id = recipe_params[:chef_id]
-    @ingredients = recipe_params[:ingredients]
-    @ingredients.each do |ingredient| 
-      existIngredient = Ingredient.find_by_name(ingredient)
-      if existIngredient.present?
-        # add record to table IngredientRecipes
-      else
-        @recipe.ingredients << Ingredient.new({name: ingredient})
-      end
-    end
+    @recipe.image.attach(recipe_params[:image])
 
-    @steps = recipe_params[:steps]
-    @steps.each do |step| 
-      @recipe.steps << Step.new({direction: step})
+    # check recipe fields (name, des, url, id) not blank
+    if checkRecipe(@recipe)
+      isValid = true
+      @recipe.save
+      @ingredients = recipe_params[:ingredients]
+      if checkIngredientInput(@ingredients)
+        @ingredients.each do |ingredientData|
+          ingredient = Ingredient.find_by(name: ingredientData)
+          ingredient = Ingredient.create(name: ingredientData) if ingredient.nil?
+          
+          ingredientRecipe = IngredientRecipe.find_by(ingredient_id: ingredient.id, recipe_id: @recipe.id)
+          if (ingredientRecipe.nil?)
+            ingredientRecipe = IngredientRecipe.new
+            ingredientRecipe.recipe_id = @recipe.id
+            ingredientRecipe.ingredient_id = ingredient.id
+            ingredientRecipe.save
+          end
+          
+        end
+      end
+
+      @steps = recipe_params[:steps]
+      if checkStepInput(@steps)
+        @steps.each do |step|
+          @recipe.steps << Step.new({ direction: step })
+        end
+      end
+    else
+      isValid = false
+      flash.now[:alert] = 'Error while sending message!'
     end
     
-    # return render @recipe_params[:ingredients]
-    # @ingredients.each do |i|
-    #   existIngredient = Ingredient.find_by_name(i)
-    #   if existIngredient.present?
-    #     RecipeIngredient.create({
-    #       recipe_id: @recipe.id,
-    #       ingredient_id: existIngredient.id
-    #     })
-    #   else
-    #     @recipe.ingredients << i 
-    #   end
-    # end
-
     respond_to do |format|
-      if @recipe.save
+      if isValid
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
         format.json { render :show, status: :created, location: @recipe }
       else
@@ -90,40 +86,53 @@ class RecipesController < ApplicationController
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
   def update
-    # Check presence 
-    recipe = @recipe
+    data = {
+      name: recipe_params[:name],
+      description: recipe_params[:description],
+      chef_id: recipe_params[:chef_id],
+      avatar_url: recipe_params[:avatar_url]
+    }
+    recipe = Recipe.find(params[:id])
+    recipe.image.attach(recipe_params[:image])
+
+
     ingredients = recipe_params[:ingredients]
-    
-    if ingredients != nil 
-      ingredients.each do |ingredient| 
-        recipe.ingredients << Ingredient.new({name: ingredient})
+    if checkIngredientInput(ingredients)
+      ingredients&.each do |ingredientData|
+        ingredient = Ingredient.find_by(name: ingredientData)
+        ingredient = Ingredient.create(name: ingredientData) if ingredient.nil?
+        
+        ingredientRecipe = IngredientRecipe.find_by(ingredient_id: ingredient.id, recipe_id: @recipe.id)
+        if (ingredientRecipe.nil?)
+          ingredientRecipe = IngredientRecipe.new
+          ingredientRecipe.recipe_id = @recipe.id
+          ingredientRecipe.ingredient_id = ingredient.id
+          ingredientRecipe.save
+        end
       end
     end
 
-    
     steps = recipe_params[:steps]
-
-
-    if steps != nil 
-      steps.each do |step| 
-        recipe.steps << Step.new({direction: step})
+    if checkStepInput(steps)
+      steps&.each do |step|
+        recipe.steps << Step.new({ direction: step })
       end
     end
 
     respond_to do |format|
-      if @recipe.update(ingredients: recipe.ingredients, steps: recipe.steps)
-        format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
-        format.json { render :show, status: :ok, location: @recipe }
+      if recipe.update(steps: recipe.steps) && recipe.update_attributes(data)
+        format.html { redirect_to recipe, notice: 'Recipe was successfully updated.' }
+        format.json { render :show, status: :ok, location: recipe }
       else
         format.html { render :edit }
-        format.json { render json: @recipe.errors, status: :unprocessable_entity }
+        format.json { render json: recipe.errors, status: :unprocessable_entity }
       end
     end
   end
 
   # DELETE /recipes/1
   # DELETE /recipes/1.json
-  def destroy    
+  def destroy
     @recipe.destroy
     respond_to do |format|
       format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
@@ -156,21 +165,25 @@ class RecipesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
+      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, :image,
         :ingredients => [],
         :steps => [],)
     end
 
+    def recipe_search_params
+      params.permit(:search)
+    end
+
     def checkRecipe(recipe)
-      return recipe != nil && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
+      !recipe.nil? && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
     end
 
     def checkStepInput(input)
-      return !input.nil? && input.length > 0
+      !input.nil? && input.length.positive?
     end
     
     def checkIngredientInput(input)
-      return !input.nil? && input.length > 0
+      !input.nil? && input.length.positive?
     end
 
     private 
