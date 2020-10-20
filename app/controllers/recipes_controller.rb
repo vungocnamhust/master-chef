@@ -107,7 +107,7 @@ class RecipesController < ApplicationController
     end
 
     respond_to do |format|
-      if @recipe.update(ingredients: recipe.ingredients, steps: recipe.steps)
+      if recipe.update(ingredients: recipe.ingredients, steps: recipe.steps) && recipe.update_attributes(data)
         format.html { redirect_to recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: recipe }
       else
