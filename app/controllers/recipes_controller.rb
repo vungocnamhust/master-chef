@@ -46,14 +46,18 @@ class RecipesController < ApplicationController
       @recipe.save
       @ingredients = recipe_params[:ingredients]
       if checkIngredientInput(@ingredients)
-        @ingredients.each do |ingredient|
-          existIngredient = Ingredient.find_or_create_by(name: ingredient)
-          existIngredient = Ingredient.find_by(name: ingredient) if existIngredient.nil?
-
-          @ingredientRecipe = IngredientRecipe.new
-          @ingredientRecipe.recipe_id = @recipe.id
-          @ingredientRecipe.ingredient_id = existIngredient.id
-          @ingredientRecipe.save
+        @ingredients.each do |ingredientData|
+          ingredient = Ingredient.find_by(name: ingredientData)
+          ingredient = Ingredient.create(name: ingredientData) if ingredient.nil?
+          
+          ingredientRecipe = IngredientRecipe.find_by(ingredient_id: ingredient.id, recipe_id: @recipe.id)
+          if (ingredientRecipe.nil?)
+            ingredientRecipe = IngredientRecipe.new
+            ingredientRecipe.recipe_id = @recipe.id
+            ingredientRecipe.ingredient_id = ingredient.id
+            ingredientRecipe.save
+          end
+          
         end
       end
 
@@ -94,8 +98,17 @@ class RecipesController < ApplicationController
 
     ingredients = recipe_params[:ingredients]
     if checkIngredientInput(ingredients)
-      ingredients&.each do |ingredient|
-        recipe.ingredients << Ingredient.new({ name: ingredient })
+      ingredients&.each do |ingredientData|
+        ingredient = Ingredient.find_by(name: ingredientData)
+        ingredient = Ingredient.create(name: ingredientData) if ingredient.nil?
+        
+        ingredientRecipe = IngredientRecipe.find_by(ingredient_id: ingredient.id, recipe_id: @recipe.id)
+        if (ingredientRecipe.nil?)
+          ingredientRecipe = IngredientRecipe.new
+          ingredientRecipe.recipe_id = @recipe.id
+          ingredientRecipe.ingredient_id = ingredient.id
+          ingredientRecipe.save
+        end
       end
     end
 
@@ -107,7 +120,7 @@ class RecipesController < ApplicationController
     end
 
     respond_to do |format|
-      if recipe.update(ingredients: recipe.ingredients, steps: recipe.steps) && recipe.update_attributes(data)
+      if recipe.update(steps: recipe.steps) && recipe.update_attributes(data)
         format.html { redirect_to recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: recipe }
       else
