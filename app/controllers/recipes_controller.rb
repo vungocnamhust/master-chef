@@ -40,6 +40,7 @@ class RecipesController < ApplicationController
     @recipe.description = recipe_params[:description]
     @recipe.avatar_url = recipe_params[:avatar_url]
     @recipe.chef_id = recipe_params[:chef_id]
+    @recipe.image.attach(recipe_params[:image])
     @ingredients = recipe_params[:ingredients]
     @ingredients.each do |ingredient| 
       existIngredient = Ingredient.find_by_name(ingredient)
@@ -135,7 +136,7 @@ class RecipesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def recipe_params
-      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, 
+      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, :image,
         :ingredients => [],
         :steps => [],)
     end
