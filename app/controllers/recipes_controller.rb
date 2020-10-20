@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
   skip_before_action :verify_authenticity_token, only: [:destroyStep, :index]
@@ -16,8 +18,7 @@ class RecipesController < ApplicationController
 
   # GET /recipes/1
   # GET /recipes/1.json
-  def show
-  end
+  def show; end
 
   # GET /recipes/new
   def new
@@ -25,15 +26,12 @@ class RecipesController < ApplicationController
   end
 
   # GET /recipes/1/edit
-  def edit
-  end
+  def edit; end
 
   def createRecipe
-    render json: {recipe: params[:recipe], ingredient: params[:ingredients], step: params[:steps]}
+    render json: { recipe: params[:recipe], ingredient: params[:ingredients], step: params[:steps] }
   end
 
-  # POST /recipes
-  # POST /recipes.json
   def create
     @recipe = Recipe.new
     @recipe.name = recipe_params[:name]
@@ -41,23 +39,38 @@ class RecipesController < ApplicationController
     @recipe.avatar_url = recipe_params[:avatar_url]
     @recipe.chef_id = recipe_params[:chef_id]
     @recipe.image.attach(recipe_params[:image])
-    @ingredients = recipe_params[:ingredients]
-    @ingredients.each do |ingredient| 
-      existIngredient = Ingredient.find_by_name(ingredient)
-      if existIngredient.present?
-        # add record to table IngredientRecipes
-      else
-        @recipe.ingredients << Ingredient.new({name: ingredient})
-      end
-    end
 
-    @steps = recipe_params[:steps]
-    @steps.each do |step| 
-      @recipe.steps << Step.new({direction: step})
+
+    # check recipe fields (name, des, url, id) not blank
+    if checkRecipe(@recipe)
+      isValid = true
+      @recipe.save
+      @ingredients = recipe_params[:ingredients]
+      if checkIngredientInput(@ingredients)
+        @ingredients.each do |ingredient|
+          existIngredient = Ingredient.find_or_create_by(name: ingredient)
+          existIngredient = Ingredient.find_by(name: ingredient) if existIngredient.nil?
+
+          @ingredientRecipe = IngredientRecipe.new
+          @ingredientRecipe.recipe_id = @recipe.id
+          @ingredientRecipe.ingredient_id = existIngredient.id
+          @ingredientRecipe.save
+        end
+      end
+
+      @steps = recipe_params[:steps]
+      if checkStepInput(@steps)
+        @steps.each do |step|
+          @recipe.steps << Step.new({ direction: step })
+        end
+      end
+    else
+      isValid = false
+      flash.now[:alert] = 'Error while sending message!'
     end
     
     respond_to do |format|
-      if @recipe.save
+      if isValid
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
         format.json { render :show, status: :created, location: @recipe }
       else
@@ -70,24 +83,17 @@ class RecipesController < ApplicationController
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
   def update
-    # Check presence 
+    # Check presence
     recipe = @recipe
     ingredients = recipe_params[:ingredients]
-    
-    if ingredients != nil 
-      ingredients.each do |ingredient| 
-        recipe.ingredients << Ingredient.new({name: ingredient})
-      end
+
+    ingredients&.each do |ingredient|
+      recipe.ingredients << Ingredient.new({ name: ingredient })
     end
 
-    
     steps = recipe_params[:steps]
-
-
-    if steps != nil 
-      steps.each do |step| 
-        recipe.steps << Step.new({direction: step})
-      end
+    steps&.each do |step|
+      recipe.steps << Step.new({ direction: step })
     end
 
     respond_to do |format|
@@ -103,7 +109,7 @@ class RecipesController < ApplicationController
 
   # DELETE /recipes/1
   # DELETE /recipes/1.json
-  def destroy    
+  def destroy
     @recipe.destroy
     respond_to do |format|
       format.html { redirect_to recipes_url, notice: 'Recipe was successfully destroyed.' }
@@ -146,15 +152,15 @@ class RecipesController < ApplicationController
     end
 
     def checkRecipe(recipe)
-      return recipe != nil && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
+      !recipe.nil? && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
     end
 
     def checkStepInput(input)
-      return !input.nil? && input.length > 0
+      !input.nil? && input.length.positive?
     end
     
     def checkIngredientInput(input)
-      return !input.nil? && input.length > 0
+      !input.nil? && input.length.positive?
     end
 
     private 

@@ -25,6 +25,8 @@
   </thead>
 
   <tbody>
+  <tr class="recipe-list"></tr>
+  <% if @recipes != nil %>
     <% @recipes.each do |recipe| %>
       <tr>
         <td><%= recipe.name %></td>
@@ -33,12 +35,79 @@
         <td><%= recipe.chef_id %></td>
         <td><%= link_to 'Show', recipe %></td>
         <td><%= link_to 'Edit', edit_recipe_path(recipe) %></td>
-        <td><%= link_to 'Destroy', recipe, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', recipe, method: :delete, data: {confirm: 'Are you sure?'} %></td>
       </tr>
     <% end %>
+  <% end %>
   </tbody>
+
 </table>
 
 <br>
 
 <%= link_to 'New Recipe', new_recipe_path %>
+<script>
+    let myInput = document.querySelector("#search");
+
+    function fromJson(recipeData) {
+        let recipe = {
+            id: recipeData['id'],
+            name: recipeData['name'],
+            description: recipeData['description'],
+            avatarUrl: recipeData['avatar_url'],
+            chefId: recipeData['chef_id']
+        }
+
+        return recipe;
+    }
+
+    myInput.onkeydown = function (e) {
+        e = e || window.event
+        if (e.keyCode === 13) {
+            e.preventDefault()
+            let recipeObj = {
+                recipe: {
+                    name: `${myInput.value}`
+                }
+            }
+        }
+    }
+
+    function getRecipes(recipeData) {
+        const headers = new Headers({
+            'Content-Type': 'application/json',
+        });
+
+        let url = '/recipes-search'
+
+        fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(recipeData),
+        })
+            .then(res => {
+                console.log(res)
+                return res.json()
+            })
+            .then(res => {
+                console.log("____________", res);
+                if (res['status'] === 'ok') {
+                    if (res['data'] !== null) console.log(res['data'])
+                    let table = document.querySelector('tbody');
+                    table.innerHTML = "";
+                    for (const recipeData of res['data']) {
+                        let recipe = fromJson(recipeData);
+                        let item = document.createElement('tr');
+                        item.innerHTML = `
+                              <td>${recipe.name}</td>
+                              <td>${recipe.description}</td>
+                              <td>${recipe.avatarUrl}</td>
+                              <td>${recipe.chefId}</td>`;
+                        table.appendChild(item);
+                    }
+                }
+
+            });
+    }
+
+</script>
