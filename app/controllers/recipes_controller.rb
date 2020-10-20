@@ -40,7 +40,6 @@ class RecipesController < ApplicationController
     @recipe.chef_id = recipe_params[:chef_id]
     @recipe.image.attach(recipe_params[:image])
 
-
     # check recipe fields (name, des, url, id) not blank
     if checkRecipe(@recipe)
       isValid = true
@@ -83,26 +82,37 @@ class RecipesController < ApplicationController
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
   def update
-    # Check presence
-    recipe = @recipe
-    ingredients = recipe_params[:ingredients]
+    data = {
+      name: recipe_params[:name],
+      description: recipe_params[:description],
+      chef_id: recipe_params[:chef_id],
+      avatar_url: recipe_params[:avatar_url]
+    }
+    recipe = Recipe.find(params[:id])
+    recipe.image.attach(recipe_params[:image])
 
-    ingredients&.each do |ingredient|
-      recipe.ingredients << Ingredient.new({ name: ingredient })
+
+    ingredients = recipe_params[:ingredients]
+    if checkIngredientInput(ingredients)
+      ingredients&.each do |ingredient|
+        recipe.ingredients << Ingredient.new({ name: ingredient })
+      end
     end
 
     steps = recipe_params[:steps]
-    steps&.each do |step|
-      recipe.steps << Step.new({ direction: step })
+    if checkStepInput(steps)
+      steps&.each do |step|
+        recipe.steps << Step.new({ direction: step })
+      end
     end
 
     respond_to do |format|
       if @recipe.update(ingredients: recipe.ingredients, steps: recipe.steps)
-        format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
-        format.json { render :show, status: :ok, location: @recipe }
+        format.html { redirect_to recipe, notice: 'Recipe was successfully updated.' }
+        format.json { render :show, status: :ok, location: recipe }
       else
         format.html { render :edit }
-        format.json { render json: @recipe.errors, status: :unprocessable_entity }
+        format.json { render json: recipe.errors, status: :unprocessable_entity }
       end
     end
   end
