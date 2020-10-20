@@ -19,8 +19,9 @@
       <th>Name</th>
       <th>Description</th>
       <th>Avatar url</th>
-      <th>Chef</th>
-      <th colspan="4"></th>
+      <th>Chef ID</th>
+      <th>Avatar</th>
+      <th colspan="5"></th>
     </tr>
   </thead>
 
@@ -33,6 +34,11 @@
         <td><%= recipe.description %></td>
         <td><%= recipe.avatar_url %></td>
         <td><%= recipe.chef_id %></td>
+        <td>
+          <span class="content">
+            <%= image_tag recipe.image if recipe.image.attached?  %>
+          </span>
+        </td>
         <td><%= link_to 'Show', recipe %></td>
         <td><%= link_to 'Edit', edit_recipe_path(recipe) %></td>
         <td><%= link_to 'Destroy', recipe, method: :delete, data: {confirm: 'Are you sure?'} %></td>
