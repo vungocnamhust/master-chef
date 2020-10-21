@@ -22,6 +22,12 @@
 
  .nav-bar form {
      margin-top: 20px;
+     background-color: #f6f8fa;   
+     box-sizing: border-box;
+     border: solid black 1px;
+     border-radius: 5px;
+     width: 40%;
+    
  }
 
   img.recipe-show {
@@ -33,8 +39,9 @@
 	height: 300px;
 	position: relative;
 	box-shadow: 10px 10px 5px #888888;
-	background: #bdc3c7;
+	background: #e6e9eb;
     margin-bottom: 20px;
+    border-radius: 5px;
 }
 
 img.recipe-index {
@@ -55,6 +62,86 @@ img.recipe-index {
 .recipe-list {
     width: 70%;
     padding-left: 40px;
-    padding-top: 40px;
     padding-right: 40px;
 }
+
+.header {
+    width: 100%;
+    padding: 40px;
+}
+
+.input-container {
+    display: flex;
+    width: 100%;
+    height: 100%; 
+    justify-content: center;
+    align-items: center;
+}
+
+.input-container #search {
+    border: none;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    height: 100%;
+}
+
+.input-container button {
+    border: none;
+    background-color: transparent;
+    text-align: center;
+    justify-self: center;
+    margin: auto;
+}
+
+.recipes-infor {
+    display: flex;    
+}
+
+.favorite-recipes {
+    width: 25%;
+    height: 1000px;
+    border: solid black 1px;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+.favorite-recipes h3 {
+    padding: 20px;
+}
+.favorite-recipes img {
+    width: 200px;
+}
+
+.favorite-recipes ul li{
+    display: flex;
+    width: 100%;
+    height: 150px;
+}
+
+.favorite-recipes p {
+    padding-left: 10px;
+}
+
+.btn-new-recipe {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    right: 50px;
+    bottom: 50px;
+    background-color: orange;
+    border-radius: 30px; /* or 50% */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 3px 3px 1px #858080;
+
+
+}
+
+.btn-new-recipe span {
+    color: white;
+    font-size: 15px;
+}
+
