@@ -71,7 +71,7 @@ img.recipe-index {
 }
 
 .input-container {
-    display: flex;
+    display: inline-flex;
     width: 100%;
     height: 100%; 
     justify-content: center;
@@ -83,15 +83,16 @@ img.recipe-index {
     background-color: transparent;
     resize: none;
     outline: none;
-    height: 100%;
+    height: 85%;
+    width: 90%;
+    margin-left: 5px;
+    font-size: 15px;
 }
 
 .input-container button {
     border: none;
     background-color: transparent;
-    text-align: center;
-    justify-self: center;
-    margin: auto;
+    height: 100%;
 }
 
 .recipes-infor {
