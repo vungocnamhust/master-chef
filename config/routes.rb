@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get '/signup', to: "chefs#new",as: :newChef
   post '/signup', to: "chefs#create",as: :createChef
   get '/chefs/:id', to: "chefs#show",as: :showChef
-  get '/chefs/index', to: "chefs#index",as: :indexChef
+  get '/', to: "chefs#index",as: :indexChef
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
