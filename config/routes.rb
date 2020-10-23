@@ -1,18 +1,20 @@
 Rails.application.routes.draw do
   
+  get 'sessions/new'
   resources :recipes
   resources :ingredient
   root 'chefs#index'
 
-  post '/add-recipe', to: "recipes#createRecipe"
-  delete '/ingredient/:id/delete', to: "ingredient#destroy"
-  delete '/steps/:id/delete', to: "recipes#destroyStep"
-  post '/search', to: "recipes#index"
+  post    '/add-recipe',            to: "recipes#createRecipe"
+  delete  '/ingredient/:id/delete', to: "ingredient#destroy"
+  delete  '/steps/:id/delete',      to: "recipes#destroyStep"
+  post    '/search',                to: "recipes#index"
 
-  get '/signup', to: "chefs#new",as: :newChef
-  post '/signup', to: "chefs#create",as: :createChef
-  get '/chefs/:id', to: "chefs#show",as: :showChef
-  get '/', to: "chefs#index",as: :indexChef
+  get     '/signup',                to: "chefs#new",            as: :newChef
+  post    '/signup',                to: "chefs#create",         as: :createChef
+  get     '/chefs/:id',             to: "chefs#show",           as: :showChef
+  get     '/',                      to: "chefs#index",          as: :indexChef
 
+  get     '/login',                 to: 'sessions#new'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

@@ -5,28 +5,13 @@ class ChefsController < ApplicationController
   end
 
   def show
-    p "______________"
-    p "______________"
-    p "show"
-    p "______________"
-
   end
 
   def new
     @chef = Chef.new
-    p "______________"
-    p "______________"
-    p "new"
-    p "______________"
-
   end
 
   def create
-    p "______________"
-    p "______________"
-    p "create"
-    p "______________"
-
     @chef = Chef.new(chef_params)
     if @chef.save 
       flash[:success] = "Welcome to the Sample App!"
