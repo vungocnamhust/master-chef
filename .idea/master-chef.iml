@@ -22,6 +22,12 @@
       <excludeFolder url="file://$MODULE_DIR$/log" />
       <excludeFolder url="file://$MODULE_DIR$/public/packs" />
       <excludeFolder url="file://$MODULE_DIR$/public/system" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/an" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/as" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/hj" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/rd" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/wi" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/zn" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/cache" />
