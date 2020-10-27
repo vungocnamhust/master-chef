@@ -12,8 +12,8 @@ class ChefsController < ApplicationController
   def create
     @chef = Chef.new(chef_params)
     if @chef.save
-      flash[:success] = 'Welcome to the Sample App!'
-      redirect_to showChef_path(id: @chef.id)
+      flash[:success] = 'Welcome to Master Chef!'
+      redirect_to login_path
     else
       render action: :new
     end
