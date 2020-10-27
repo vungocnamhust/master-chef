@@ -42,3 +42,5 @@ yarn-debug.log*
 
 .idea/master-chef.iml
 .idea/workspace.xml
+
+app/views/.DS_Store
