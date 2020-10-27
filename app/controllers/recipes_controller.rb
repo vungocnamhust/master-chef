@@ -8,12 +8,11 @@ class RecipesController < ApplicationController
   # GET /recipes.json
   def index
     searchValue = params['search']
-    if (searchValue.blank?) 
-      @recipes = Recipe.all
-    else 
-      @recipes = Recipe.where("name LIKE ?", "%" + searchValue +"%")
-    end
-    
+    @recipes = if searchValue.blank?
+                 Recipe.all
+               else
+                 Recipe.where('name LIKE ?', '%' + searchValue + '%')
+               end
   end
 
   # GET /recipes/1
@@ -49,7 +48,7 @@ class RecipesController < ApplicationController
         @ingredients.each do |ingredientData|
           ingredient = Ingredient.find_by(name: ingredientData)
           ingredient = Ingredient.create(name: ingredientData) if ingredient.nil?
-          
+
           ingredientRecipe = IngredientRecipe.find_by(ingredient_id: ingredient.id, recipe_id: @recipe.id)
           if (ingredientRecipe.nil?)
             ingredientRecipe = IngredientRecipe.new
@@ -57,7 +56,6 @@ class RecipesController < ApplicationController
             ingredientRecipe.ingredient_id = ingredient.id
             ingredientRecipe.save
           end
-          
         end
       end
 
@@ -71,7 +69,7 @@ class RecipesController < ApplicationController
       isValid = false
       flash.now[:alert] = 'Error while sending message!'
     end
-    
+
     respond_to do |format|
       if isValid
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
@@ -82,7 +80,7 @@ class RecipesController < ApplicationController
       end
     end
   end
- 
+
   # PATCH/PUT /recipes/1
   # PATCH/PUT /recipes/1.json
   def update
@@ -95,13 +93,12 @@ class RecipesController < ApplicationController
     recipe = Recipe.find(params[:id])
     recipe.image.attach(recipe_params[:image])
 
-
     ingredients = recipe_params[:ingredients]
     if checkIngredientInput(ingredients)
       ingredients&.each do |ingredientData|
         ingredient = Ingredient.find_by(name: ingredientData)
         ingredient = Ingredient.create(name: ingredientData) if ingredient.nil?
-        
+
         ingredientRecipe = IngredientRecipe.find_by(ingredient_id: ingredient.id, recipe_id: @recipe.id)
         if (ingredientRecipe.nil?)
           ingredientRecipe = IngredientRecipe.new
@@ -143,53 +140,53 @@ class RecipesController < ApplicationController
   def destroyStep
     stepId = step_params[:id]
     step = Step.find_by_id(stepId)
-    
+
     if step.destroy
       respond_to do |format|
-        msg = {:status => "ok", :message => "Success", :data => {id: stepId}}
+        msg = { :status => 'ok', :message => 'Success', :data => { id: stepId } }
         format.json { render :json => msg }
       end
     else
       respond_to do |format|
-        msg = {:status => "fail", :message => "Not found in db"}
-        format.json{render :json => msg}
-      end 
+        msg = { :status => 'fail', :message => 'Not found in db' }
+        format.json { render :json => msg}
+      end
     end
   end
- 
+
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_recipe
-      @recipe = Recipe.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def recipe_params
-      params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, :image,
-        :ingredients => [],
-        :steps => [],)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_recipe
+    @recipe = Recipe.find(params[:id])
+  end
 
-    def recipe_search_params
-      params.permit(:search)
-    end
+  # Only allow a list of trusted parameters through.
+  def recipe_params
+    params.require(:recipe).permit(:description, :name, :avatar_url, :chef_id, :image,
+                                   :ingredients => [],
+                                   :steps => [],)
+  end
 
-    def checkRecipe(recipe)
-      !recipe.nil? && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
-    end
+  def recipe_search_params
+    params.permit(:search)
+  end
 
-    def checkStepInput(input)
-      !input.nil? && input.length.positive?
-    end
-    
-    def checkIngredientInput(input)
-      !input.nil? && input.length.positive?
-    end
+  def checkRecipe(recipe)
+    !recipe.nil? && !recipe.name.blank? && !recipe.chef_id.blank? && !recipe.avatar_url.blank?
+  end
 
-    private 
-    def step_params
-      params.require(:step).permit(:id)
-    end
-    
+  def checkStepInput(input)
+    !input.nil? && input.length.positive?
+  end
 
+  def checkIngredientInput(input)
+    !input.nil? && input.length.positive?
+  end
+
+  private
+
+  def step_params
+    params.require(:step).permit(:id)
+  end
 end
