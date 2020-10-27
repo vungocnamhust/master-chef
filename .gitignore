@@ -40,5 +40,5 @@
 yarn-debug.log*
 .yarn-integrity
 
-../../.idea/master-chef.iml
-../../.idea/workspace.xml
+.idea/master-chef.iml
+.idea/workspace.xml
