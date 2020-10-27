@@ -116,7 +116,6 @@
                 return res.json()
             })
             .then(res => {
-                console.log("____________", res);
                 if (res['status'] === 'ok') {
                     if (res['data'] !== null) console.log(res['data'])
                     let table = document.querySelector('tbody');
