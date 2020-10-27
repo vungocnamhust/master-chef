@@ -5,16 +5,16 @@
 <div class="header">
   <div class="nav-bar">
     <h1>Recipes</h1>
-    <%= form_tag '/search', method: 'post', :class => 'form-inline' do %> 
-      
+    <%= form_tag '/search', method: 'post', :class => 'form-inline' do %>
+
       <div class="form-group input-container">
-          <button class="icon search js-activate" title="Search" name="commit" type="submit" >
+        <button class="icon search js-activate" title="Search" name="commit" type="submit">
             <span
               class="icon icon-search utility-icon color-navigation ">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" tabindex="-1"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </span>
-          </button>
-          <input type="text" name="search" id="search" placeholder="Find a Recipe">   
+        </button>
+        <input type="text" name="search" id="search" placeholder="Find a Recipe">
       </div>
     <% end %>
 <%# end of search %>
@@ -25,40 +25,40 @@
 <div class="recipes-infor">
   <div class="recipe-list">
     <div class="row">
-    <% @recipes.each do |recipe| %>
-    <div class="col-md-4">
-      <div class="recipe-box">
-        <% if recipe.image.attached?%>
-          <%= link_to (image_tag recipe.image, class: "recipe-index"), recipe %>
-        <% end %>
-        <ul>
-            <li><%= recipe.name %></li>
-            <li><%= recipe.description %></li>
-            <li><%= link_to 'Show', recipe %> |
-            <%= link_to 'Edit', edit_recipe_path(recipe) %> |
-            <%= link_to 'Destroy', recipe, method: :delete, data: { confirm: 'Are you sure?' } %></li>
-        </ul>
-      </div><!-- /recipe-box-->
-    </div><!--col-md-4-->
-    <% end %>
+      <% @recipes.each do |recipe| %>
+        <div class="col-md-4">
+          <div class="recipe-box">
+            <% if recipe.image.attached? %>
+              <%= link_to (image_tag recipe.image, class: "recipe-index"), recipe %>
+            <% end %>
+            <ul>
+              <li><%= recipe.name %></li>
+              <li><%= recipe.description %></li>
+              <li><%= link_to 'Show', recipe %> |
+                <%= link_to 'Edit', edit_recipe_path(recipe) %> |
+                <%= link_to 'Destroy', recipe, method: :delete, data: {confirm: 'Are you sure?'} %></li>
+            </ul>
+          </div><!-- /recipe-box-->
+        </div><!--col-md-4-->
+      <% end %>
     </div><!--/row-->
   </div><!--/recipe-list-->
 
 
-  <div class="favorite-recipes" >
+  <div class="favorite-recipes">
     <h3>Favorite recipes</h3>
     <ul>
       <% @recipes.first(5).each do |recipe| %>
         <li>
-            <% if recipe.image.attached?%>
-              <%= link_to (image_tag recipe.image, class: "recipe-index"), recipe %>
-            <% end %>
-            <div class="flex-vertical">
-              <p><strong>Name: </strong><%= recipe.name%><p>
-              <p><strong>Description: </strong><%= recipe.description%><p>
-            </div>
+          <% if recipe.image.attached? %>
+            <%= link_to (image_tag recipe.image, class: "recipe-index"), recipe %>
+          <% end %>
+          <div class="flex-vertical">
+            <p><strong>Name: </strong><%= recipe.name %><p>
+            <p><strong>Description: </strong><%= recipe.description %><p>
+          </div>
         </li>
-      <%end%>
+      <% end %>
     </ul>
   </div>
 </div>
@@ -67,7 +67,7 @@
 <br>
 
 
-<a href=<%= new_recipe_path%> class="btn-new-recipe">
+<a href=<%= new_recipe_path %> class="btn-new-recipe">
   <span class="glyphicon glyphicon-plus"></span>
 </a>
 

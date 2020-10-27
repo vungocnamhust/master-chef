@@ -3,7 +3,13 @@
 class SessionsController < ApplicationController
   include SessionsHelper
 
-  def new; end
+  def new
+    p '___________________'
+    p '___________________'
+    p 'session new'
+    p '___________________'
+
+  end
 
   def create
     chef = Chef.find_by(mail: params[:session][:mail].downcase)
@@ -16,5 +22,8 @@ class SessionsController < ApplicationController
     end
   end
 
-  def destroy; end
+  def destroy
+    log_out
+    redirect_to root_url
+  end
 end
