@@ -13,6 +13,11 @@ class SessionsController < ApplicationController
 
   def create
     chef = Chef.find_by(mail: params[:session][:mail].downcase)
+    p '___________________'
+    p '___________________'
+    p chef
+    p '___________________'
+
     if chef&.authenticate(params[:session][:password])
       log_in(chef)
       redirect_to recipes_path
