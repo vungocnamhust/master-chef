@@ -1,24 +1,22 @@
-# README
+# Master chef
+The web application about recipes for cooking which was built on RoR framework. 
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
+## Environment
 * Ruby version
+    - ruby 2.6.3p62 (2019-04-16 revision 67580) [universal.x86_64-darwin19]
 
-* System dependencies
+* Rails version
+    - Rails 6.0.3.3
 
-* Configuration
+* Database
+    - SQLite3
 
-* Database creation
+## Features
+* Login [x]
+* Logout [x]
+* Sign in [x]
+* Remember user [x]
+* CRUD recipe [x]
+* Search recipes [x]
+* Manage your recipes [x]
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
