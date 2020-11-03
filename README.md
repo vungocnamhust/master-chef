@@ -18,7 +18,9 @@ The web application about recipes for cooking which was built on RoR framework.
 * Remember user [x]
 * CRUD recipe [x]
 * Search recipes [x]
-* Manage your recipes [x]
+* Manage your recipes []
+* Favorite recipes []
+* Setting your account []
 
 ## Folder structure
 
