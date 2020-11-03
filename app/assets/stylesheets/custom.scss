@@ -157,6 +157,7 @@ footer {
   ul {
     float: right;
     list-style: none;
+
     li {
       float: left;
       margin-left: 15px;
@@ -184,4 +185,17 @@ footer {
   }
 }
 
+.checkbox {
+  margin-top: -10px;
+  margin-bottom: 10px;
 
+  span {
+    margin-left: 20px;
+    font-weight: normal;
+  }
+}
+
+#session_remember_me {
+  width: auto;
+  margin-left: 0;
+}
