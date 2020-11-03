@@ -22,4 +22,130 @@
 
  .nav-bar form {
      margin-top: 20px;
+     background-color: #f6f8fa;   
+     box-sizing: border-box;
+     border: solid black 1px;
+     border-radius: 5px;
+     width: 40%;
+    
  }
+
+  img.recipe-show {
+	width: 400px;
+	height: auto;
+}
+
+.recipe-box {
+	height: 300px;
+	position: relative;
+	box-shadow: 10px 10px 5px #888888;
+	background: #e6e9eb;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+img.recipe-index {
+	width: 100%;
+	height: 70%;
+	object-fit: cover;
+}
+
+.recipe-box ul {
+	list-style-type:none;
+	position: absolute;
+	bottom: 0;
+}
+.recipe-box li:first-child {
+	font-size: 24px;
+}
+
+.recipe-list {
+    width: 70%;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.header {
+    width: 100%;
+    padding: 40px;
+}
+
+.row {
+    width: 100%;
+    height: 100%;
+}
+.input-container {
+    width: 100%;
+    height: 100%; 
+    justify-content: center;
+    align-items: center;
+}
+
+.input-container #search {
+    border: none;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    height: 100%;
+    width: 70%;
+    margin-right: 10px;
+}
+
+.input-container button {
+    border: none;
+    background-color: transparent;
+    height: 100%;
+    margin-left: 10px;
+}
+
+.recipes-infor {
+    display: flex;    
+}
+
+.favorite-recipes {
+    width: 40%;
+    height: 1000px;
+    border: solid black 1px;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+.favorite-recipes h3 {
+    padding: 20px;
+}
+.favorite-recipes img {
+    width: 200px;
+}
+
+.favorite-recipes ul li{
+    display: flex;
+    width: 100%;
+    height: 150px;
+}
+
+.favorite-recipes p {
+    padding-left: 10px;
+}
+
+.btn-new-recipe {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    right: 50px;
+    bottom: 50px;
+    background-color: orange;
+    border-radius: 30px; /* or 50% */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 3px 3px 1px #858080;
+
+
+}
+
+.btn-new-recipe span {
+    color: white;
+    font-size: 15px;
+}
+
