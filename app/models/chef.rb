@@ -27,7 +27,7 @@ class Chef < ApplicationRecord
   end
 
   # Remember a user in database for persistent session
-  def remember
+  def remember_digest_token
     self.remember_token = Chef.new_token
     update_attribute(:remember_digest, Chef.digest(remember_token))
   end

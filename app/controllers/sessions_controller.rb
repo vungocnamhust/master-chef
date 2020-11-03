@@ -9,7 +9,8 @@ class SessionsController < ApplicationController
     chef = Chef.find_by(mail: params[:session][:mail].downcase)
     if chef&.authenticate(params[:session][:password])
       log_in(chef)
-      remember chef
+      params[:session][:remember_me] == '1' ? remember(chef) : forget(chef)
+
       redirect_to recipes_path
     else
       flash[:danger] = 'Invalid email/password combination' # Not quite right!
